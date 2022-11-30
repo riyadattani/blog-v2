@@ -1,15 +1,19 @@
 package main
 
 import (
+	"blog-v2/src/domain/blog"
 	"blog-v2/src/domain/greet"
 	"context"
+
+	bloghandler "blog-v2/src/adapters/httpserver/blogHandler"
 
 	greethandler2 "blog-v2/src/adapters/httpserver/greethandler"
 )
 
 // App holds and creates dependencies for your application.
 type App struct {
-	Greeter greethandler2.GreeterService
+	Greeter     greethandler2.GreeterService
+	BlogService bloghandler.BlogService
 }
 
 func newApp(applicationContext context.Context) *App {
@@ -21,7 +25,8 @@ func newApp(applicationContext context.Context) *App {
 	//}
 
 	return &App{
-		Greeter: greethandler2.GreeterServiceFunc(greet.HelloGreeter),
+		BlogService: blog.New(),
+		Greeter:     greethandler2.GreeterServiceFunc(greet.HelloGreeter),
 	}
 }
 

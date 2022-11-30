@@ -8,13 +8,13 @@ import (
 	"time"
 )
 
-type APIClient struct {
+type APIClientGreeter struct {
 	baseURL    string
 	httpClient *http.Client
 }
 
-func NewAPIClient(transport http.RoundTripper, baseURL string) *APIClient {
-	return &APIClient{
+func NewAPIClientGreeter(transport http.RoundTripper, baseURL string) *APIClientGreeter {
+	return &APIClientGreeter{
 		baseURL: baseURL,
 		httpClient: &http.Client{
 			Timeout:   5 * time.Second,
@@ -23,7 +23,7 @@ func NewAPIClient(transport http.RoundTripper, baseURL string) *APIClient {
 	}
 }
 
-func (a *APIClient) Greet(ctx context.Context, name string) (string, error) {
+func (a *APIClientGreeter) Greet(ctx context.Context, name string) (string, error) {
 	url := a.baseURL + "/greet/" + name
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -49,7 +49,7 @@ func (a *APIClient) Greet(ctx context.Context, name string) (string, error) {
 	return string(body), nil
 }
 
-func (a *APIClient) checkIfHealthy(ctx context.Context) error {
+func (a *APIClientGreeter) checkIfHealthy(ctx context.Context) error {
 	url := a.baseURL + "/internal/healthcheck"
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -70,7 +70,7 @@ func (a *APIClient) checkIfHealthy(ctx context.Context) error {
 	return nil
 }
 
-func (a *APIClient) WaitForAPIToBeHealthy(ctx context.Context, retries int) error {
+func (a *APIClientGreeter) WaitForAPIToBeHealthy(ctx context.Context, retries int) error {
 	var (
 		err   error
 		start = time.Now()

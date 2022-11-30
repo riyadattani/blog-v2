@@ -1,9 +1,8 @@
 //go:build acceptance
 
-package acceptance_test
+package acceptance
 
 import (
-	"blog-v2/black-box-tests/acceptance"
 	"blog-v2/src/specifications"
 	"context"
 	"net/http"
@@ -14,20 +13,20 @@ import (
 
 const fiveRetries = 5
 
-func TestBlogApplication(t *testing.T) {
-	config, err := acceptance.LoadTestingConfig()
+func TestGreetingApplication(t *testing.T) {
+	config, err := LoadTestingConfig()
 	assert.NoError(t, err)
 
-	client := acceptance.NewAPIClient(http.DefaultTransport, config.BaseURL)
+	client := NewAPIClientGreeter(http.DefaultTransport, config.BaseURL)
 
 	if err := client.WaitForAPIToBeHealthy(context.Background(), fiveRetries); err != nil {
 		t.Fatal(err)
 	}
 
-	t.Run("api can read a blog", func(t *testing.T) {
-		specifications.Blog{
+	t.Run("api can do greetings", func(t *testing.T) {
+		specifications.Greeting{
 			Subject: client,
-			MakeCTX: func(tb testing.TB) context.Context {
+			MakeContext: func(tb testing.TB) context.Context {
 				return context.Background()
 			},
 		}.Test(t)

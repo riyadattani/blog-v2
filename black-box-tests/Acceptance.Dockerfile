@@ -8,7 +8,7 @@ WORKDIR /app
 COPY vendor ./vendor
 COPY go.mod go.sum ./
 
-COPY src/specifications ./src/specifications/
+COPY src ./src/
 COPY black-box-tests ./black-box-tests/
 
 CMD [ "go", "test", "-count=1", "--tags=acceptance", "./..." ]

@@ -28,6 +28,7 @@ func main() {
 
 	router := httpserver.NewRouter(
 		app.Greeter,
+		app.BlogService,
 	)
 	server := gracefulshutdown.NewServer(httpserver.NewWebServer(config.ServerConfig, router))
 
