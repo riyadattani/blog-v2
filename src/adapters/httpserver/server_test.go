@@ -3,6 +3,7 @@ package httpserver_test
 import (
 	"blog-v2/black-box-tests/acceptance"
 	"blog-v2/src/adapters/httpserver"
+	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
 	"blog-v2/src/specifications"
 	"context"
@@ -13,7 +14,7 @@ import (
 
 func TestNewWebServer(t *testing.T) {
 	router := httpserver.NewRouter(
-		blog.New(),
+		blog.NewService(inmem.NewRepository()),
 	)
 	webServer := httpserver.NewWebServer(
 		httpserver.ServerConfig{},

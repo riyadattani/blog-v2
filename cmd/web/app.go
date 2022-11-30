@@ -1,10 +1,10 @@
 package main
 
 import (
+	"blog-v2/src/adapters/httpserver/bloghandler"
+	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
 	"context"
-
-	bloghandler "blog-v2/src/adapters/httpserver/blogHandler"
 )
 
 // App holds and creates dependencies for your application.
@@ -21,7 +21,7 @@ func newApp(applicationContext context.Context) *App {
 	//}
 
 	return &App{
-		BlogService: blog.New(),
+		BlogService: blog.NewService(inmem.NewRepository()),
 	}
 }
 

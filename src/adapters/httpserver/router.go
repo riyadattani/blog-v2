@@ -4,7 +4,7 @@ import (
 	"blog-v2/src/adapters/httpserver/healthcheckhandler"
 	"net/http"
 
-	bloghandler "blog-v2/src/adapters/httpserver/blogHandler"
+	bloghandler "blog-v2/src/adapters/httpserver/bloghandler"
 
 	"github.com/gorilla/mux"
 )
