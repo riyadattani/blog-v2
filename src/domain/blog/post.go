@@ -1,6 +1,6 @@
 package blog
 
 type Post struct {
-	Title   string
-	Content string
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
