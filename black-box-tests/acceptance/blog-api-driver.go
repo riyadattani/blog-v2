@@ -1,7 +1,6 @@
 package acceptance
 
 import (
-	"blog-v2/src/domain/blog"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -9,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"blog-v2/src/domain/blog"
 )
 
 type APIClient struct {
@@ -76,7 +77,7 @@ func (a *APIClient) Publish(ctx context.Context, post blog.Post) error {
 	defer res.Body.Close()
 	all, _ := io.ReadAll(res.Body)
 
-	if res.StatusCode == http.StatusBadRequest {
+	if res.StatusCode == http.StatusInternalServerError {
 		return fmt.Errorf(string(all))
 	}
 
