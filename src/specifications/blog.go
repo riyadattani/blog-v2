@@ -2,7 +2,6 @@ package specifications
 
 import (
 	"blog-v2/src/domain/blog"
-	"blog-v2/src/domain/random"
 	"context"
 	"testing"
 
@@ -15,8 +14,9 @@ type BlogDriver interface {
 }
 
 type Blog struct {
-	Subject BlogDriver
-	MakeCTX func(tb testing.TB) context.Context
+	Subject  BlogDriver
+	MakeCTX  func(tb testing.TB) context.Context
+	MakePost func(tb testing.TB) (blog.Post, error)
 }
 
 func (b Blog) Test(t *testing.T) {
@@ -24,12 +24,12 @@ func (b Blog) Test(t *testing.T) {
 
 	t.Run("can publish and read a blog post", func(t *testing.T) {
 		ctx := b.MakeCTX(t)
-
-		postToPublish := random.Post()
+		postToPublish, err := b.MakePost(t)
+		assert.NoError(t, err)
 
 		assert.NoError(t, b.Subject.Publish(ctx, postToPublish))
-
 		gotPost, err := b.Subject.Read(ctx, postToPublish.Title)
+
 		assert.NoError(t, err)
 		assert.Equal(t, postToPublish.Title, gotPost.Title)
 		assert.Equal(t, postToPublish.Content, gotPost.Content)

@@ -5,6 +5,7 @@ import (
 	"blog-v2/src/adapters/httpserver"
 	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
+	"blog-v2/src/domain/random"
 	"blog-v2/src/specifications"
 	"context"
 	"net/http"
@@ -28,6 +29,9 @@ func TestNewWebServer(t *testing.T) {
 		Subject: acceptance.NewAPIClient(http.DefaultTransport, svr.URL),
 		MakeCTX: func(tb testing.TB) context.Context {
 			return context.Background()
+		},
+		MakePost: func(tb testing.TB) (blog.Post, error) {
+			return random.Post(), nil
 		},
 	}.Test(t)
 }
