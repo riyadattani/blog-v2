@@ -1,0 +1,24 @@
+run:
+  go: '1.18'
+  build-tags:
+    - unit
+    - integration
+    - acceptance
+
+linters-settings:
+  gofumpt:
+    module-path: github.com/saltpay/go-walking-skeleton
+
+linters:
+  # Enable extra linters besides the default ones
+  enable:
+    - godot
+    - goconst
+    - gofumpt
+    - govet
+    - stylecheck
+    - unconvert
+    - unparam
+    - misspell
+    - whitespace
+    - bodyclose

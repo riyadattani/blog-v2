@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job 
+metadata:
+  name: black-box-tests
+  labels:
+    app: black-box-tests
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: black-box-tests
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: black-box-tests
+        image: black-box-tests
