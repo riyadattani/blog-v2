@@ -44,3 +44,20 @@ func (g *BlogHandler) Read(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = json.NewEncoder(w).Encode(post)
 }
+
+func (g *BlogHandler) Publish(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var b blog.Post
+
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+		http.Error(w, "could decode post", http.StatusInternalServerError)
+		return
+	}
+
+	if err := g.blogService.Publish(ctx, b); err != nil {
+		http.Error(w, "could not publish post", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+}

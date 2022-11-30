@@ -24,7 +24,7 @@ func TestBlogApplication(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Run("api can read a blog", func(t *testing.T) {
+	t.Run("can publish and read a blog using an api", func(t *testing.T) {
 		specifications.Blog{
 			Subject: client,
 			MakeCTX: func(tb testing.TB) context.Context {

@@ -2,6 +2,7 @@ package blog
 
 import (
 	"context"
+	"fmt"
 )
 
 type Repository interface {
@@ -20,13 +21,20 @@ func NewService(repo Repository) *Service {
 }
 
 func (b Service) Publish(ctx context.Context, post Post) error {
-	// TODO implement me
-	panic("implement me")
+	if err := b.Repository.Create(ctx, post); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (b Service) Read(ctx context.Context, title string) (post Post, err error) {
-	return Post{
-		Title:   "life",
-		Content: "yo",
-	}, nil
+	post, found, err := b.Repository.Get(ctx, title)
+	if err != nil {
+		return Post{}, err
+	}
+
+	if !found {
+		return Post{}, fmt.Errorf("could not find blog with title %q", title)
+	}
+	return post, nil
 }

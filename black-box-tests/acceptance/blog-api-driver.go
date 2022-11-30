@@ -2,9 +2,11 @@ package acceptance
 
 import (
 	"blog-v2/src/domain/blog"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 )
@@ -53,8 +55,36 @@ func (a *APIClient) Read(ctx context.Context, title string) (post blog.Post, err
 }
 
 func (a *APIClient) Publish(ctx context.Context, post blog.Post) error {
-	// TODO implement me
-	panic("implement me")
+	url := a.baseURL + "/blog"
+
+	body := &bytes.Buffer{}
+	err := json.NewEncoder(body).Encode(post)
+	if err != nil {
+		return fmt.Errorf("could not encode blog")
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return fmt.Errorf("could not create new request: %w", err)
+	}
+
+	res, err := a.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("problem reaching %s: %w", url, err)
+	}
+
+	defer res.Body.Close()
+	all, _ := io.ReadAll(res.Body)
+
+	if res.StatusCode == http.StatusBadRequest {
+		return fmt.Errorf(string(all))
+	}
+
+	if res.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("unexpected status %d from POST %q, body: %q", res.StatusCode, url, string(all))
+	}
+
+	return nil
 }
 
 func (a *APIClient) WaitForAPIToBeHealthy(ctx context.Context, retries int) error {

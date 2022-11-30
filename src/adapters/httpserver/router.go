@@ -1,16 +1,16 @@
 package httpserver
 
 import (
+	"blog-v2/src/adapters/httpserver/bloghandler"
 	"blog-v2/src/adapters/httpserver/healthcheckhandler"
 	"net/http"
-
-	bloghandler "blog-v2/src/adapters/httpserver/bloghandler"
 
 	"github.com/gorilla/mux"
 )
 
 const (
-	blogPath        = "/blog/{title}"
+	blogByTitlePath = "/blog/{title}"
+	blogPath        = "/blog"
 	healthCheckPath = "/internal/healthcheck"
 )
 
@@ -21,6 +21,8 @@ func NewRouter(
 
 	router := mux.NewRouter()
 	router.HandleFunc(healthCheckPath, healthcheckhandler.HealthCheck)
-	router.Handle(blogPath, http.HandlerFunc(blogHandler.Read))
+
+	router.Handle(blogByTitlePath, http.HandlerFunc(blogHandler.Read))
+	router.Handle(blogPath, http.HandlerFunc(blogHandler.Publish))
 	return router
 }
