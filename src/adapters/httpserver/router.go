@@ -3,7 +3,10 @@ package httpserver
 import (
 	"blog-v2/src/adapters/httpserver/bloghandler"
 	"blog-v2/src/adapters/httpserver/healthcheckhandler"
+	"embed"
+	"html/template"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -13,6 +16,11 @@ const (
 	blogPath        = "/blog"
 	healthCheckPath = "/internal/healthcheck"
 )
+
+//go:embed templates/*
+var resources embed.FS
+
+var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 func NewRouter(
 	blogService bloghandler.BlogService,
@@ -24,5 +32,14 @@ func NewRouter(
 
 	router.Handle(blogByTitlePath, http.HandlerFunc(blogHandler.Read))
 	router.Handle(blogPath, http.HandlerFunc(blogHandler.Publish))
+
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := map[string]string{
+			"Region": os.Getenv("FLY_REGION"),
+		}
+
+		t.ExecuteTemplate(w, "index.html.tmpl", data)
+	})
+
 	return router
 }
