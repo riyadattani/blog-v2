@@ -10,10 +10,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const (
-	eventsPath = "/events"
-)
-
 //go:embed bloghandler/css/*
 var css embed.FS
 
