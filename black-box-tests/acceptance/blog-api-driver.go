@@ -1,6 +1,7 @@
 package acceptance
 
 import (
+	"blog-v2/src/domain/blog"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -8,8 +9,6 @@ import (
 	"io"
 	"net/http"
 	"time"
-
-	"blog-v2/src/domain/blog"
 )
 
 type APIClient struct {

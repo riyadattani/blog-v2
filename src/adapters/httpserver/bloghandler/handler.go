@@ -3,7 +3,10 @@ package bloghandler
 import (
 	"blog-v2/src/domain/blog"
 	"context"
+	"embed"
 	"encoding/json"
+	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
 
@@ -60,4 +63,26 @@ func (g *BlogHandler) Publish(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+}
+
+//go:embed templates/*
+var templates embed.FS
+
+var t = template.Must(template.ParseFS(templates, "templates/*"))
+
+func (g *BlogHandler) About(w http.ResponseWriter, r *http.Request) {
+	if err := t.ExecuteTemplate(w, "about.gohtml", nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (g *BlogHandler) Public(css fs.FS) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		f, err := fs.Sub(css, "bloghandler/css")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		http.FileServer(http.FS(f)).ServeHTTP(w, r)
+	})
 }

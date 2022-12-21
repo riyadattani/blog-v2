@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.18 as build
+FROM public.ecr.aws/docker/library/golang:1.19 as build
 
 ENV CGO_ENABLED=0 \
     GOOS=linux \
