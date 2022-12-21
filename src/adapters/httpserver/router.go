@@ -4,15 +4,14 @@ import (
 	"blog-v2/src/adapters/httpserver/bloghandler"
 	"blog-v2/src/adapters/httpserver/healthcheckhandler"
 	"embed"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 const (
-	blogByTitlePath = "/blog/{title}"
-	blogPath        = "/blog"
-	healthCheckPath = "/internal/healthcheck"
+	eventsPath = "/events"
 )
 
 //go:embed bloghandler/css/*
@@ -26,10 +25,19 @@ func NewRouter(
 	router := mux.NewRouter()
 
 	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", blogHandler.Public(css)))
-	router.HandleFunc(healthCheckPath, healthcheckhandler.HealthCheck)
-	router.Handle(blogByTitlePath, http.HandlerFunc(blogHandler.Read))
-	router.Handle(blogPath, http.HandlerFunc(blogHandler.Publish))
+	router.HandleFunc("/internal/healthcheck", healthcheckhandler.HealthCheck)
+	router.Handle("/blog/{title}", http.HandlerFunc(blogHandler.Read))
+	router.Handle("/blog", http.HandlerFunc(blogHandler.Publish)).Methods(http.MethodPost)
 	router.Handle("/about", http.HandlerFunc(blogHandler.About))
+	router.Handle("/events", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotImplemented)
+		fmt.Fprintf(w, "Under construction :)")
+	}))
+
+	router.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotImplemented)
+		fmt.Fprintf(w, "Under construction :)")
+	}))
 
 	return router
 }
