@@ -4,6 +4,6 @@ Deployed on fly: https://riya-dattani-blog.fly.dev/
 
 Run tests:
 ```
-go test ./...
+make t
 ```
 
