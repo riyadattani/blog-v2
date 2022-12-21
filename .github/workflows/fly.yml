@@ -19,8 +19,8 @@ jobs:
 
   test:
     name: Run tests
-    needs: [ golangci ]
-    if: success()
+#    needs: [ golangci ]
+#    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
@@ -34,7 +34,7 @@ jobs:
 
   deploy:
     name: Deploy app
-    needs: [ golangci, test ]
+    needs: [ test ]
     if: success()
     runs-on: ubuntu-latest
     steps:
