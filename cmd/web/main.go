@@ -22,6 +22,8 @@ func main() {
 		log.Fatalf("failed to load config - %v", err)
 	}
 
+	// pp.PP(">>>> posts", posts)
+
 	app := src.NewApp(ctx, posts)
 	//if err != nil {
 	//	log.Fatal("failed to create app")
