@@ -6,16 +6,14 @@ import (
 	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
 	"blog-v2/src/specifications"
+	"blog-v2/src/testhelpers/random"
 	"context"
 	"io/fs"
 	"testing"
-	"testing/fstest"
 )
 
 func TestBlog(t *testing.T) {
-	dirFS := fstest.MapFS{
-		"first-post.md": {Data: []byte("blah")},
-	}
+	dirFS := random.DirFSHardcoded()
 
 	repo := inmem.NewRepository(dirFS)
 	service := blog.NewService(repo)

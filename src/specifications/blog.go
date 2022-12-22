@@ -27,25 +27,32 @@ func (b Blog) Test(t *testing.T) {
 	t.Run("can create a post, save it and read it", func(t *testing.T) {
 		ctx := b.MakeCTX(t)
 
-		blogDir := b.MakeBlogDir(t)
+		dir := b.MakeBlogDir(t)
 
-		pp.PP(blogDir)
+		pp.PP(dir)
 
-		entries, err := fs.ReadDir(blogDir, ".")
+		entries, err := fs.ReadDir(dir, ".")
 		assert.NoError(t, err)
 
 		for _, entry := range entries {
-			_, err := b.Subject.ReadPost(ctx, entry.Name())
+			post, err := b.Subject.ReadPost(ctx, entry.Name())
 			assert.NoError(t, err)
 
-			t.Logf(entry.Name())
+			bytes, err := fs.ReadFile(dir, entry.Name())
+			assert.NoError(t, err)
 
-			// TODO: read the content!
+			markdown := string(bytes)
+			assert.Contains(t, markdown, post.Title)
+			assert.Contains(t, markdown, post.Picture)
 
-			//f, err := blogDir.Open(entry.Name())
-			//assert.NoError(t, err)
-			//
-			//defer f.Close()
+			tags := post.Tags
+			for _, tag := range tags {
+				assert.Contains(t, markdown, tag)
+			}
+
+			// assert.Contains(t, markdown, string(post.Content))
+			// assert.Contains(t, markdown, post.URLTitle)
+			// assert.Contains(t, markdown, post.Date)
 		}
 	})
 }

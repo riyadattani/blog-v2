@@ -1,3 +1,6 @@
+# github.com/Depado/bfchroma v1.3.0
+## explicit; go 1.14
+github.com/Depado/bfchroma
 # github.com/adamluzsi/testcase v0.121.0
 ## explicit; go 1.18
 github.com/adamluzsi/testcase/internal/caller
@@ -5,9 +8,48 @@ github.com/adamluzsi/testcase/pp
 # github.com/alecthomas/assert/v2 v2.2.0
 ## explicit; go 1.18
 github.com/alecthomas/assert/v2
+# github.com/alecthomas/chroma v0.10.0
+## explicit; go 1.13
+github.com/alecthomas/chroma
+github.com/alecthomas/chroma/formatters/html
+github.com/alecthomas/chroma/lexers
+github.com/alecthomas/chroma/lexers/a
+github.com/alecthomas/chroma/lexers/b
+github.com/alecthomas/chroma/lexers/c
+github.com/alecthomas/chroma/lexers/circular
+github.com/alecthomas/chroma/lexers/d
+github.com/alecthomas/chroma/lexers/e
+github.com/alecthomas/chroma/lexers/f
+github.com/alecthomas/chroma/lexers/g
+github.com/alecthomas/chroma/lexers/h
+github.com/alecthomas/chroma/lexers/i
+github.com/alecthomas/chroma/lexers/internal
+github.com/alecthomas/chroma/lexers/j
+github.com/alecthomas/chroma/lexers/k
+github.com/alecthomas/chroma/lexers/l
+github.com/alecthomas/chroma/lexers/m
+github.com/alecthomas/chroma/lexers/n
+github.com/alecthomas/chroma/lexers/o
+github.com/alecthomas/chroma/lexers/p
+github.com/alecthomas/chroma/lexers/q
+github.com/alecthomas/chroma/lexers/r
+github.com/alecthomas/chroma/lexers/s
+github.com/alecthomas/chroma/lexers/t
+github.com/alecthomas/chroma/lexers/v
+github.com/alecthomas/chroma/lexers/w
+github.com/alecthomas/chroma/lexers/x
+github.com/alecthomas/chroma/lexers/y
+github.com/alecthomas/chroma/lexers/z
+github.com/alecthomas/chroma/styles
 # github.com/alecthomas/repr v0.1.0
 ## explicit; go 1.15
 github.com/alecthomas/repr
+# github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964
+## explicit
+# github.com/dlclark/regexp2 v1.4.0
+## explicit
+github.com/dlclark/regexp2
+github.com/dlclark/regexp2/syntax
 # github.com/go-logr/logr v1.2.3
 ## explicit; go 1.16
 github.com/go-logr/logr
@@ -32,6 +74,11 @@ github.com/kelseyhightower/envconfig
 # github.com/quii/go-graceful-shutdown v0.6.0
 ## explicit; go 1.18
 github.com/quii/go-graceful-shutdown
+# github.com/russross/blackfriday/v2 v2.1.0
+## explicit
+github.com/russross/blackfriday/v2
+# github.com/shurcooL/sanitized_anchor_name v1.0.0
+## explicit
 # go.opentelemetry.io/otel v1.11.1
 ## explicit; go 1.18
 go.opentelemetry.io/otel

@@ -5,20 +5,16 @@ import (
 	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
 	"blog-v2/src/specifications"
+	"blog-v2/src/testhelpers/random"
 	"context"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"testing/fstest"
 )
 
 func TestNewWebServer(t *testing.T) {
-	dirFS := fstest.MapFS{
-		"first-post.md":  {Data: []byte("blah")},
-		"second-post.md": {Data: []byte("blah blah")},
-	}
-
+	dirFS := random.DirFSHardcoded()
 	router := httpserver.NewRouter(
 		blog.NewService(inmem.NewRepository(dirFS)),
 	)
