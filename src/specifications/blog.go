@@ -2,11 +2,10 @@ package specifications
 
 import (
 	"blog-v2/src/domain/blog"
+	"blog-v2/src/testhelpers/random"
 	"context"
 	"io/fs"
 	"testing"
-
-	"github.com/adamluzsi/testcase/pp"
 
 	"github.com/alecthomas/assert/v2"
 )
@@ -26,10 +25,9 @@ func (b Blog) Test(t *testing.T) {
 
 	t.Run("can create a post, save it and read it", func(t *testing.T) {
 		ctx := b.MakeCTX(t)
-
 		dir := b.MakeBlogDir(t)
 
-		pp.PP(dir)
+		// pp.PP(dir)
 
 		entries, err := fs.ReadDir(dir, ".")
 		assert.NoError(t, err)
@@ -53,6 +51,21 @@ func (b Blog) Test(t *testing.T) {
 			// assert.Contains(t, markdown, string(post.Content))
 			// assert.Contains(t, markdown, post.URLTitle)
 			// assert.Contains(t, markdown, post.Date)
+		}
+	})
+
+	t.Run("error if blog post does not exist", func(t *testing.T) {
+		ctx := b.MakeCTX(t)
+		dir := random.DirFS("does-not-exist")
+
+		// pp.PP(dir)
+
+		entries, err := fs.ReadDir(dir, ".")
+		assert.NoError(t, err)
+
+		for _, entry := range entries {
+			_, err := b.Subject.ReadPost(ctx, entry.Name())
+			assert.Error(t, err)
 		}
 	})
 }
