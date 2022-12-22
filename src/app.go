@@ -1,10 +1,11 @@
-package main
+package src
 
 import (
 	"blog-v2/src/adapters/httpserver/bloghandler"
 	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
 	"context"
+	"io/fs"
 )
 
 // App holds and creates dependencies for your application.
@@ -12,7 +13,7 @@ type App struct {
 	BlogService bloghandler.BlogService
 }
 
-func newApp(applicationContext context.Context) *App {
+func NewApp(applicationContext context.Context, posts fs.FS) *App {
 	go handleInterrupts(applicationContext)
 
 	//appMetrics, err := metrics.NewClient()
@@ -21,7 +22,7 @@ func newApp(applicationContext context.Context) *App {
 	//}
 
 	return &App{
-		BlogService: blog.NewService(inmem.NewRepository()),
+		BlogService: blog.NewService(inmem.NewRepository(posts)),
 	}
 }
 

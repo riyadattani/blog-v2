@@ -1,46 +1,39 @@
 package repository
 
 import (
-	"blog-v2/src/domain/blog"
-	"blog-v2/src/domain/random"
 	"context"
+	"io/fs"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
 )
 
 type Driver interface {
-	Get(ctx context.Context, title string) (blog blog.Post, found bool, err error)
-	Create(ctx context.Context, blog blog.Post) error
-	// Update(ctx context.Context, blog blog.Post) error
-	// Delete(ctx context.Context, title string) error
+	Get(ctx context.Context, title string) (stuff []byte, found bool, err error)
 }
 
 type Specification struct {
 	NewRepo     Driver
 	MakeContext func(tb testing.TB) context.Context
+	MakeDir     func(tb testing.TB) fs.FS
 }
 
 func (s Specification) Test(t *testing.T) {
-	t.Run("Create post", func(t *testing.T) {
-		t.Run("it cannot create a post with the same title twice", func(t *testing.T) {
-		})
-	})
-	t.Run("Get post by title", func(t *testing.T) {
-		t.Run("it can retrieve a stored post by title", func(t *testing.T) {
-			ctx := s.MakeContext(t)
-			post := random.Post()
+	t.Run("get from dir", func(t *testing.T) {
+		ctx := s.MakeContext(t)
+		repo := s.NewRepo
 
-			repo := s.NewRepo
-			assert.NoError(t, repo.Create(ctx, post))
-			got, found, err := repo.Get(ctx, post.Title)
+		dir := s.MakeDir(t)
+
+		entries, err := fs.ReadDir(dir, ".")
+		assert.NoError(t, err)
+
+		for _, entry := range entries {
+			_, found, err := repo.Get(ctx, entry.Name())
 
 			assert.NoError(t, err)
 			assert.True(t, found)
-			assert.Equal(t, post, got)
-		})
-
-		t.Run("it returns an empty slice when there are not posts by that title", func(t *testing.T) {
-		})
+			// assert.Equal(t, expected, got)
+		}
 	})
 }

@@ -1,26 +1,21 @@
-package acceptance
+package httpserver
 
 import (
-	"blog-v2/src"
-	"blog-v2/src/adapters/httpserver"
 	"blog-v2/src/domain/blog"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"net/http/httptest"
-	"os"
 	"time"
 )
 
-type APIClient struct {
+type Client struct {
 	baseURL    string
 	httpClient *http.Client
 }
 
-func NewAPIClient(transport http.RoundTripper, baseURL string) *APIClient {
-	return &APIClient{
+func NewClient(transport http.RoundTripper, baseURL string) *Client {
+	return &Client{
 		baseURL: baseURL,
 		httpClient: &http.Client{
 			Timeout:   5 * time.Second,
@@ -29,20 +24,8 @@ func NewAPIClient(transport http.RoundTripper, baseURL string) *APIClient {
 	}
 }
 
-func (a *APIClient) ReadPost(ctx context.Context, title string) (blog.Post, error) {
-	fs := os.DirFS("testdata")
-	newApp := src.NewApp(ctx, fs)
-
-	server := httpserver.NewWebServer(httpserver.ServerConfig{
-		Port: "8080",
-	}, httpserver.NewRouter(newApp.BlogService))
-	svr := httptest.NewServer(server.Handler)
-
-	defer svr.Close()
-
-	// url := svr.URL + "/blog/" + urlTitle
-
-	url := svr.URL + "/blog/" + title
+func (a *Client) ReadPost(ctx context.Context, title string) (blog.Post, error) {
+	url := a.baseURL + "/blog/" + title
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -69,39 +52,7 @@ func (a *APIClient) ReadPost(ctx context.Context, title string) (blog.Post, erro
 	return response, nil
 }
 
-func (a *APIClient) SavePost(ctx context.Context, post os.File) error {
-	url := a.baseURL + "/blog"
-
-	fileBytes, err := os.Open(post.Name())
-	if err != nil {
-		return fmt.Errorf("could not open file: %v", err)
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, fileBytes)
-	if err != nil {
-		return fmt.Errorf("could not create new request: %w", err)
-	}
-
-	res, err := a.httpClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("problem reaching %s: %w", url, err)
-	}
-
-	defer res.Body.Close()
-	all, _ := io.ReadAll(res.Body)
-
-	if res.StatusCode == http.StatusInternalServerError {
-		return fmt.Errorf(string(all))
-	}
-
-	if res.StatusCode != http.StatusAccepted {
-		return fmt.Errorf("unexpected status %d from POST %q, body: %q", res.StatusCode, url, string(all))
-	}
-
-	return nil
-}
-
-func (a *APIClient) WaitForAPIToBeHealthy(ctx context.Context, retries int) error {
+func (a *Client) WaitForAPIToBeHealthy(ctx context.Context, retries int) error {
 	var (
 		err   error
 		start = time.Now()
@@ -119,7 +70,7 @@ func (a *APIClient) WaitForAPIToBeHealthy(ctx context.Context, retries int) erro
 	return fmt.Errorf("given up checking healthcheck after %dms, %v", time.Since(start).Milliseconds(), err)
 }
 
-func (a *APIClient) checkIfHealthy(ctx context.Context) error {
+func (a *Client) checkIfHealthy(ctx context.Context) error {
 	url := a.baseURL + "/internal/healthcheck"
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)

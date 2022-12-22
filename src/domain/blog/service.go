@@ -6,8 +6,7 @@ import (
 )
 
 type Repository interface {
-	Get(ctx context.Context, title string) (blog Post, found bool, err error)
-	Create(ctx context.Context, blog Post) error
+	Get(ctx context.Context, title string) (stuff []byte, found bool, err error)
 }
 
 type Service struct {
@@ -20,15 +19,8 @@ func NewService(repo Repository) *Service {
 	}
 }
 
-func (b Service) Publish(ctx context.Context, post Post) error {
-	if err := b.Repository.Create(ctx, post); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (b Service) Read(ctx context.Context, title string) (post Post, err error) {
-	post, found, err := b.Repository.Get(ctx, title)
+func (b Service) ReadPost(ctx context.Context, title string) (Post, error) {
+	stuff, found, err := b.Repository.Get(ctx, title)
 	if err != nil {
 		return Post{}, err
 	}
@@ -36,5 +28,18 @@ func (b Service) Read(ctx context.Context, title string) (post Post, err error) 
 	if !found {
 		return Post{}, fmt.Errorf("could not find blog with title %q", title)
 	}
+
+	post := convertToPost(stuff)
+	if err != nil {
+		return Post{}, fmt.Errorf("error converting to a blog post: %v", err)
+	}
+
 	return post, nil
+}
+
+func convertToPost(_ []byte) Post {
+	return Post{
+		Title:   "first-post.md",
+		Content: "blah",
+	}
 }

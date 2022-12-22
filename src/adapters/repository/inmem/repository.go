@@ -1,29 +1,37 @@
 package inmem
 
 import (
-	"blog-v2/src/domain/blog"
 	"context"
+	"fmt"
+	"io/fs"
 )
 
 type Repository struct {
-	posts []blog.Post
+	filesystem fs.FS
 }
 
-func NewRepository() *Repository {
-	return &Repository{}
+func NewRepository(system fs.FS) *Repository {
+	return &Repository{
+		filesystem: system,
+	}
 }
 
-func (r *Repository) Get(ctx context.Context, title string) (blog blog.Post, found bool, err error) {
-	for _, b := range r.posts {
-		if b.Title == title {
-			return b, true, nil
+func (r *Repository) Get(ctx context.Context, title string) (stuff []byte, found bool, err error) {
+	entries, err := fs.ReadDir(r.filesystem, ".")
+	if err != nil {
+		return nil, false, err
+	}
+
+	for _, entry := range entries {
+		if entry.Name() == title {
+			fileBytes, err := fs.ReadFile(r.filesystem, entry.Name())
+			if err != nil {
+				return nil, found, fmt.Errorf("found file but there is nothing inside")
+			}
+
+			return fileBytes, true, nil
 		}
 	}
 
-	return blog, false, nil
-}
-
-func (r *Repository) Create(ctx context.Context, post blog.Post) error {
-	r.posts = append(r.posts, post)
-	return nil
+	return nil, false, fmt.Errorf("something went wrong when getting file from repo")
 }

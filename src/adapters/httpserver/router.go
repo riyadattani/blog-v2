@@ -23,7 +23,6 @@ func NewRouter(
 	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", blogHandler.Public(css)))
 	router.HandleFunc("/internal/healthcheck", healthcheckhandler.HealthCheck)
 	router.Handle("/blog/{title}", http.HandlerFunc(blogHandler.Read))
-	router.Handle("/blog", http.HandlerFunc(blogHandler.Publish)).Methods(http.MethodPost)
 	router.Handle("/about", http.HandlerFunc(blogHandler.About))
 	router.Handle("/events", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotImplemented)

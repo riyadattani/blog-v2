@@ -5,21 +5,28 @@ package blog_test
 import (
 	"blog-v2/src/adapters/repository/inmem"
 	"blog-v2/src/domain/blog"
-	"blog-v2/src/domain/random"
 	"blog-v2/src/specifications"
 	"context"
+	"io/fs"
 	"testing"
+	"testing/fstest"
 )
 
 func TestBlog(t *testing.T) {
-	repo := inmem.NewRepository()
+	dirFS := fstest.MapFS{
+		"first-post.md": {Data: []byte("blah")},
+	}
+
+	repo := inmem.NewRepository(dirFS)
+	service := blog.NewService(repo)
+
 	specifications.Blog{
-		Subject: blog.NewService(repo),
+		Subject: service,
 		MakeCTX: func(tb testing.TB) context.Context {
 			return context.Background()
 		},
-		MakePost: func(tb testing.TB) (blog.Post, error) {
-			return random.Post(), nil
+		MakeBlogDir: func(tb testing.TB) fs.FS {
+			return dirFS
 		},
 	}.Test(t)
 }

@@ -4,11 +4,11 @@ package acceptance_test
 
 import (
 	"blog-v2/black-box-tests/acceptance"
-	"blog-v2/src/domain/blog"
-	"blog-v2/src/domain/random"
 	"blog-v2/src/specifications"
 	"context"
+	"io/fs"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -32,8 +32,8 @@ func TestBlogApplication(t *testing.T) {
 			MakeCTX: func(tb testing.TB) context.Context {
 				return context.Background()
 			},
-			MakePost: func(tb testing.TB) (blog.Post, error) {
-				return random.Post(), nil
+			MakeBlogDir: func(tb testing.TB) fs.FS {
+				return os.DirFS("testdata")
 			},
 		}.Test(t)
 	})

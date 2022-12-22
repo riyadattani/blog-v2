@@ -1,11 +1,17 @@
 package main
 
 import (
+	"blog-v2/src"
 	"blog-v2/src/adapters/httpserver"
+	"embed"
 	"log"
 
 	gracefulshutdown "github.com/quii/go-graceful-shutdown"
 )
+
+//go:embed posts/*
+
+var posts embed.FS
 
 func main() {
 	ctx, done := listenForCancellationAndAddToContext()
@@ -16,7 +22,7 @@ func main() {
 		log.Fatalf("failed to load config - %v", err)
 	}
 
-	app := newApp(ctx)
+	app := src.NewApp(ctx, posts)
 	//if err != nil {
 	//	log.Fatal("failed to create app")
 	//}
