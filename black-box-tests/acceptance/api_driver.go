@@ -33,14 +33,10 @@ func (a *APIClient) ReadPost(ctx context.Context, title string) (blog.Post, erro
 	fs := os.DirFS("testdata")
 	newApp := src.NewApp(ctx, fs)
 
-	server := httpserver.NewWebServer(httpserver.ServerConfig{
-		Port: "8080",
-	}, httpserver.NewRouter(newApp.BlogService))
+	server := httpserver.NewWebServer(httpserver.ServerConfig{}, httpserver.NewRouter(newApp.BlogService))
 	svr := httptest.NewServer(server.Handler)
 
 	defer svr.Close()
-
-	// url := svr.URL + "/blog/" + urlTitle
 
 	url := svr.URL + "/blog/" + title
 

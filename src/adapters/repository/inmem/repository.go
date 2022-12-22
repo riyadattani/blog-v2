@@ -3,6 +3,7 @@ package inmem
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 )
 
@@ -19,7 +20,7 @@ func NewRepository(system fs.FS) *Repository {
 func (r *Repository) Get(ctx context.Context, title string) (stuff []byte, found bool, err error) {
 	entries, err := fs.ReadDir(r.filesystem, ".")
 	if err != nil {
-		return nil, false, err
+		return nil, false, fmt.Errorf("cannot read directory: %v", err)
 	}
 
 	if len(entries) == 0 {
