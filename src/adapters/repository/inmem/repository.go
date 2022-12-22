@@ -2,7 +2,7 @@ package inmem
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"io/fs"
 )
 
@@ -22,16 +22,26 @@ func (r *Repository) Get(ctx context.Context, title string) (stuff []byte, found
 		return nil, false, err
 	}
 
+	if len(entries) == 0 {
+		return nil, false, ErrNoEntriesFound
+	}
+
 	for _, entry := range entries {
 		if entry.Name() == title {
 			fileBytes, err := fs.ReadFile(r.filesystem, entry.Name())
 			if err != nil {
-				return nil, found, fmt.Errorf("found file but there is nothing inside")
+				return nil, found, ErrEmptyEntry
 			}
 
 			return fileBytes, true, nil
 		}
 	}
 
-	return nil, false, fmt.Errorf("something went wrong when getting file from repo")
+	return nil, false, ErrEntryNotFound
 }
+
+var (
+	ErrEntryNotFound  = errors.New("could not find entry in the filesystem")
+	ErrNoEntriesFound = errors.New("filesystem is empty")
+	ErrEmptyEntry     = errors.New("no data in entry")
+)

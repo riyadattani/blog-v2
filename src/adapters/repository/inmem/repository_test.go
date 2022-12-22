@@ -5,18 +5,14 @@ package inmem_test
 import (
 	"blog-v2/src/adapters/repository"
 	"blog-v2/src/adapters/repository/inmem"
+	"blog-v2/src/testhelpers/random"
 	"context"
 	"io/fs"
 	"testing"
-	"testing/fstest"
 )
 
 func TestRepository(t *testing.T) {
-	dirFS := fstest.MapFS{
-		"first-post.md":  {Data: []byte("blah")},
-		"second-post.md": {Data: []byte("blah blah")},
-	}
-
+	dirFS := random.DirFSHardcoded()
 	repository.Specification{
 		NewRepo: inmem.NewRepository(dirFS),
 		MakeContext: func(tb testing.TB) context.Context {
