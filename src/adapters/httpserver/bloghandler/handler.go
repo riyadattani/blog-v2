@@ -5,6 +5,7 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"io/fs"
 	"log"
@@ -34,13 +35,18 @@ func (g *BlogHandler) Read(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	title := mux.Vars(r)["title"]
 	if title == "" {
-		http.Error(w, "empty title", http.StatusInternalServerError)
+		http.Error(w, "empty title", http.StatusBadRequest)
 		return
 	}
 
 	post, err := g.blogService.ReadPost(ctx, title)
+	var errNotFound blog.ErrNotFound
+	if errors.As(err, &errNotFound) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	if err != nil {
-		log.Println("failed to read post", err.Error())
+		log.Println("failed to read post: ", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

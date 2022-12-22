@@ -30,7 +30,7 @@ func (b Service) ReadPost(ctx context.Context, title string) (Post, error) {
 	}
 
 	if !found {
-		return Post{}, fmt.Errorf("could not find blog with title %q", title)
+		return Post{}, ErrNotFound{Title: title}
 	}
 
 	post, err := convertToPost(bytes.NewReader(stuff))
