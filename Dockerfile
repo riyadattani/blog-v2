@@ -17,6 +17,7 @@ COPY cmd ./cmd
 COPY src/adapters ./src/adapters
 COPY src/domain ./src/domain
 COPY src/specifications ./src/specifications
+COPY src/app.go ./src/app.go
 
 # Build the application and copy somewhere convienient
 RUN go build -mod=vendor -o main ./cmd/web/*.go
