@@ -4,6 +4,7 @@ import (
 	"blog-v2/src/domain/blog"
 	"context"
 	"embed"
+	"encoding/json"
 	"errors"
 	"html/template"
 	"io/fs"
@@ -47,6 +48,11 @@ func (g *BlogHandler) Read(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("failed to read post: ", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err = json.NewEncoder(w).Encode(post); err != nil {
+		http.Error(w, "error encoding post to JSON", http.StatusInternalServerError)
 		return
 	}
 
