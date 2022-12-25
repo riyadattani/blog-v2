@@ -3,15 +3,11 @@ package main
 import (
 	"blog-v2/src"
 	"blog-v2/src/adapters/httpserver"
-	"embed"
 	"log"
+	"os"
 
 	gracefulshutdown "github.com/quii/go-graceful-shutdown"
 )
-
-//go:embed posts/*
-
-var posts embed.FS
 
 func main() {
 	ctx, done := listenForCancellationAndAddToContext()
@@ -22,17 +18,7 @@ func main() {
 		log.Fatalf("failed to load config - %v", err)
 	}
 
-	// pp.PP(">>>> posts", posts)
-
-	app := src.NewApp(ctx, posts)
-	//if err != nil {
-	//	log.Fatal("failed to create app")
-	//}
-
-	//serverMiddlewares, err := httpserver.NewMiddlewares()
-	//if err != nil {
-	//	log.Fatal("failed to create middlewares")
-	//}
+	app := src.NewApp(ctx, os.DirFS("./cmd/web/posts"))
 
 	router := httpserver.NewRouter(
 		app.BlogService,

@@ -30,8 +30,7 @@ func NewAPIClient(transport http.RoundTripper, baseURL string) *APIClient {
 }
 
 func (a *APIClient) ReadPost(ctx context.Context, title string) (blog.Post, error) {
-	fs := os.DirFS("testdata")
-	newApp := src.NewApp(ctx, fs)
+	newApp := src.NewApp(ctx, os.DirFS("testdata"))
 
 	server := httpserver.NewWebServer(httpserver.ServerConfig{}, httpserver.NewRouter(newApp.BlogService))
 	svr := httptest.NewServer(server.Handler)
