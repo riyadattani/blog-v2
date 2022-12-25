@@ -4,7 +4,6 @@ import (
 	"blog-v2/src/domain/blog"
 	"context"
 	"embed"
-	"encoding/json"
 	"errors"
 	"html/template"
 	"io/fs"
@@ -50,7 +49,12 @@ func (g *BlogHandler) Read(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_ = json.NewEncoder(w).Encode(post)
+
+	err = t.ExecuteTemplate(w, "blog.gohtml", post)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 //go:embed templates/*
