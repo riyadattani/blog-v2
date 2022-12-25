@@ -3,7 +3,6 @@ package main
 import (
 	"blog-v2/src"
 	"blog-v2/src/adapters/httpserver"
-	"fmt"
 	"log"
 	"os"
 
@@ -18,13 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load config - %v", err)
 	}
-	dir, _ := os.Getwd()
-	entries, _ := os.ReadDir(dir)
-
-	for _, entry := range entries {
-		fmt.Print(entry.Name())
-	}
-
+	// todo: make this work for the REAL app - can you run the acceptance test after it is deployed
 	app := src.NewApp(ctx, os.DirFS("./cmd/web/posts"))
 
 	router := httpserver.NewRouter(
