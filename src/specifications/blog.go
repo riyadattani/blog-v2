@@ -4,6 +4,7 @@ import (
 	"blog-v2/src/domain/blog"
 	"blog-v2/src/testhelpers/random"
 	"context"
+	"github.com/adamluzsi/testcase/pp"
 	"io/fs"
 	"testing"
 
@@ -27,7 +28,7 @@ func (b Blog) Test(t *testing.T) {
 		ctx := b.MakeCTX(t)
 		dir := b.MakeBlogDir(t)
 
-		// pp.PP(dir)
+		pp.PP(dir)
 
 		entries, err := fs.ReadDir(dir, ".")
 		assert.NoError(t, err)
